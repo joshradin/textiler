@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/joshradin/eventide-dominion/tree/main/crates/happiness/theme.schema.json",
+  "title": "Happiness Theme",
+  "description": "Provides a schema for a theme for a happiness theme",
+  "version": "1.0.0",
+  "type": "object",
+  "properties": {
+    "prefix": {
+      "type": "string"
+    },
+    "palettes": {
+      "type": "object",
+      "description": "The palettes objects defines the different palettes that are available within the schema",
+      "patternProperties": {
+        "[a-zA-Z_]\\w*": {
+          "$ref": "#/$defs/palette"
+        }
+      },
+      "additionalProperties": false
+    },
+    "typography": {
+      "type": "object",
+      "description": "provides layout details for object levels",
+      "properties": {
+        "*": {
+          "description": "applies to every level",
+          "$ref": "#/$defs/typography_scale"
+        }
+      },
+      "patternProperties": {
+        "h[1-4]": {
+          "$ref": "#/$defs/typography_scale",
+          "description": "Header levels h1-h4"
+        },
+        "(body|title)-(xs|sm|md|lg|xl)": {
+          "$ref": "#/$defs/typography_scale",
+          "description": "Body or title levels"
+        },
+        "\\w[\\w-]*\\w": {
+          "$ref": "#/$defs/typography_scale",
+          "description": "Custom typography levels"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "palettes",
+    "typography"
+  ],
+  "$defs": {
+    "palette": {
+      "type": "object",
+      "description": "Predetermined selectors",
+      "properties": {
+        "selectors": {
+          "type": "object",
+          "patternProperties": {
+            "\\w+": {
+              "$ref": "#/$defs/selector"
+            }
+          }
+        },
+        "gradient": {
+          "type": "object",
+          "properties": {
+            "points": {
+              "type": "object",
+              "patternProperties": {
+                "((0)?\\.\\d+)|(1\\.0)": {
+                  "$ref": "#/$defs/color"
+                }
+              },
+              "additionalProperties": false,
+              "requiredProperties": [
+                "0",
+                "1"
+              ]
+            },
+            "mode": {
+              "enum": [
+                "hsl",
+                "rgb"
+              ],
+              "description": "If set, converts all specified points into the given color mode before creating the gradient. This can create different results."
+            }
+          },
+          "additionalProperties": false,
+          "requiredProperties": [
+            "points"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "selector": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "A selector within the palette",
+          "properties": {
+            "dark": {
+              "$ref": "#/$defs/color"
+            },
+            "light": {
+              "$ref": "#/$defs/color"
+            }
+          },
+          "required": [
+            "dark",
+            "light"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "$ref": "#/$defs/color"
+        }
+      ]
+    },
+    "color": {
+      "oneOf": [
+        {
+          "description": "A CSS color literal, directly inserted within CSS",
+          "type": "string",
+          "pattern": ".+"
+        },
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "description": "An RGB(A) value",
+              "properties": {
+                "r": {
+                  "type": "number",
+                  "description": "The red value",
+                  "min": 0,
+                  "max": 255
+                },
+                "g": {
+                  "type": "number",
+                  "description": "The green value",
+                  "min": 0,
+                  "max": 255
+                },
+                "b": {
+                  "type": "number",
+                  "description": "The blue value",
+                  "min": 0,
+                  "max": 255
+                },
+                "a": {
+                  "type": "number",
+                  "description": "The alpha value",
+                  "min": 0,
+                  "max": 255
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "r",
+                "g",
+                "b"
+              ]
+            },
+            {
+              "type": "object",
+              "description": "An HSL(A) value",
+              "properties": {
+                "h": {
+                  "type": "number",
+                  "description": "The hue value",
+                  "min": 0,
+                  "max": 360
+                },
+                "s": {
+                  "type": "number",
+                  "description": "The saturation value",
+                  "min": 0,
+                  "max": 100
+                },
+                "l": {
+                  "type": "number",
+                  "description": "The lightness value",
+                  "min": 0,
+                  "max": 100
+                },
+                "a": {
+                  "type": "number",
+                  "description": "The alpha value",
+                  "min": 0,
+                  "max": 100
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "h",
+                "s",
+                "l"
+              ]
+            },
+            {
+              "type": "object",
+              "description": "A theme variable, like 'background.body'",
+              "properties": {
+                "var": {
+                  "type": "string",
+                  "pattern": "[a-zA-Z_]\\w*\\.\\w+"
+                },
+                "fallback": {
+                  "$ref": "#/$defs/color"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "var"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "typography_scale": {
+      "palette": {
+
+      }
+    }
+  }
+}
