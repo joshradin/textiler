@@ -1,0 +1,14 @@
+[package]
+name = "textiler"
+description = "The main textiler library, where most components are made available"
+edition = "2021"
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+license-file.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+textiler-core = { path = "../textiler-core", version = "0.1.0"}
+yew = "0.21.0"
