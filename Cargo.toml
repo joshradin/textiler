@@ -7,4 +7,3 @@ version = "0.1.0"
 description = "A yew library built for convience and beauty"
 authors = ["Joshua Radin <joshradin@github.com>"]
 license = "MIT or Apache-2.0"
-license-file = "LICENSE"
