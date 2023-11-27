@@ -1,14 +1,15 @@
 //! Contains system components. Not meant for general use
 
-use crate::style::{Color, Variant};
-use crate::sx;
-use crate::theme::hooks::{use_sx, use_theme};
-use crate::theme::sx::Sx;
 use std::ops::Deref;
+
 use strum::IntoEnumIterator;
 use web_sys::HtmlElement;
+use yew::{classes, Classes, function_component, html, Html, Properties, use_effect_with};
 use yew::html::{Children, ImplicitClone, IntoPropValue};
-use yew::{classes, function_component, html, use_effect_with, Classes, Html, NodeRef, Properties};
+
+use crate::hooks::{use_sx, use_theme};
+use crate::style::{Color, Variant};
+use crate::theme::sx::Sx;
 
 #[derive(Default, Debug, Clone, PartialEq, Properties)]
 pub struct StylingBoxProps {

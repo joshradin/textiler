@@ -1,6 +1,5 @@
-use crate::theme::context::style_manager_context::StyleManagerContext;
-use stylist::manager::StyleManager;
 use yew::hook;
+use crate::context::StyleManagerContext;
 
 /// Use a theme
 #[hook]

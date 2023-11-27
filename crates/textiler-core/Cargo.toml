@@ -1,10 +1,11 @@
 [package]
-name = "happiness"
+name = "textiler-core"
+description = "Provides the core utilities to get textiler to work"
 edition = "2021"
 version.workspace = true
-description.workspace = true
 authors.workspace = true
-
+license.workspace = true
+license-file.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

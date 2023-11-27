@@ -1,15 +1,16 @@
-use crate::theme::theme_mode::ThemeMode;
-use crate::theme::Theme;
-use crate::{Error, Sx};
-use cfg_if::cfg_if;
-use gloo::utils::document;
-use minifier::css::Minified;
 use std::ops::Deref;
 use std::rc::Rc;
+
+use cfg_if::cfg_if;
+use gloo::utils::document;
 use stylist::ast::ToStyleStr;
 use stylist::manager::StyleManager;
 use wasm_bindgen::JsCast;
 use web_sys::{HtmlStyleElement, Node};
+
+use crate::{Error, Sx};
+use crate::theme::Theme;
+use crate::theme::theme_mode::ThemeMode;
 
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct StyleManagerContext {

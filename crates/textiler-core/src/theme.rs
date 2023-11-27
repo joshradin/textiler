@@ -18,9 +18,7 @@ pub mod color;
 
 pub mod baseline;
 pub mod breakpoint;
-pub mod context;
 pub mod gradient;
-pub mod hooks;
 pub mod palette;
 pub mod parsing;
 pub mod sx;

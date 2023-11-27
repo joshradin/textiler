@@ -2,11 +2,7 @@ use log::info;
 use wasm_bindgen_test::wasm_bindgen_test;
 use yew::{function_component, html, use_callback, Callback, Html, Renderer};
 
-use happiness::prelude::*;
-use happiness::theme::hooks::use_mode;
-use happiness::theme::theme_mode::ThemeMode;
-use happiness::theme::Theme;
-use happiness::{surfaces::Sheet, typography::Typography, CssBaseline, ThemeProvider};
+use textiler_core::prelude::*;
 
 wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 

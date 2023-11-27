@@ -1,2 +1,10 @@
 [workspace]
-members = ["crates/textiler-*"]
+members = ["crates/textiler*"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.1"
+description = "A yew library built for convience and beauty"
+authors = ["Joshua Radin <joshradin@github.com>"]
+license = "MIT or Apache-2.0"
+license-file = "LICENSE"

@@ -10,18 +10,25 @@ pub use components::*;
 pub mod theme;
 pub use error::Error;
 
-pub use crate::theme::hooks::use_sx;
-pub use theme::context::*;
 pub use theme::sx::Sx;
 
 pub mod system_props;
 pub mod utils;
 
 pub mod style;
+pub mod context;
+pub mod hooks;
 
 /// The prelude
 pub mod prelude {
     pub use crate::style::*;
     pub use crate::sx;
-    pub use crate::theme::{sx::Sx, Theme};
+    pub use crate::theme::{sx::Sx, Theme, theme_mode::ThemeMode};
+    pub use crate::context::{CssBaseline, StyleManagerContext, ThemeContext, ThemeModeContext, ThemeProvider};
+    pub use crate::hooks::*;
+    pub use crate::surfaces::Sheet;
+    pub use crate::system::StylingBox;
+    pub use crate::typography::Typography;
+    pub use crate::style::*;
+
 }

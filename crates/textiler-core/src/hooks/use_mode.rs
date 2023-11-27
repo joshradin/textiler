@@ -1,4 +1,4 @@
-use crate::theme::context::mode_context::ThemeModeContext;
+use crate::context::ThemeModeContext;
 use crate::theme::theme_mode::ThemeMode;
 use yew::{hook, use_context, Callback};
 

@@ -1,9 +1,8 @@
-use yew::{function_component, html, Children, Html, Properties};
+use yew::{Children, function_component, html, Html, Properties};
 
-use crate::style::{Color, Variant};
+use crate::{components::system::StylingBox, sx, theme::sx::SxValue};
 use crate::system::{ColorProp, VariantProp};
 use crate::theme::sx::Sx;
-use crate::{components::system::StylingBox, sx, theme::sx::SxValue};
 
 #[derive(Default, Debug, Clone, PartialEq, Properties)]
 pub struct SheetProps {

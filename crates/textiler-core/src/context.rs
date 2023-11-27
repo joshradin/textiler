@@ -1,23 +1,21 @@
 //! Theme context
 
-use mode_context::ThemeModeContext;
 use std::ops::{Deref, DerefMut};
-use style_manager_context::StyleManagerContext;
 use stylist::ast::ToStyleStr;
 use stylist::manager::StyleManager;
-use stylist::yew::styled_component;
-use theme_context::ThemeContext;
 use wasm_bindgen::JsCast;
 use yew::{function_component, html, use_effect_with, use_state_eq, Children, Html, Properties};
 
 use crate::theme::baseline::baseline;
 use crate::theme::theme_mode::ThemeMode;
-use crate::theme::{hooks, Theme};
-use crate::{Error, Sx};
+use crate::theme::{Theme};
+use crate::{Error, hooks, Sx};
 
-pub mod mode_context;
-pub mod style_manager_context;
-pub mod theme_context;
+pub use self::{mode_context::ThemeModeContext, style_manager_context::StyleManagerContext, theme_context::ThemeContext};
+
+mod mode_context;
+mod style_manager_context;
+mod theme_context;
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct ThemeProviderProps {

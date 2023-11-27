@@ -1,7 +1,7 @@
 use stylist::Style;
 use yew::{hook, use_memo};
 
-use crate::theme::hooks::{use_mode, use_style_manager, use_theme};
+use crate::hooks::{use_mode, use_style_manager, use_theme};
 use crate::theme::sx::{Sx, SxRef};
 use crate::theme::Theme;
 
