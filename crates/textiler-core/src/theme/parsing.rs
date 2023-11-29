@@ -2,6 +2,7 @@
 
 use std::io;
 use std::io::Read;
+use bigdecimal::{BigDecimal, FromPrimitive};
 
 use indexmap::IndexMap;
 use serde::Deserialize;
@@ -153,8 +154,8 @@ impl SxJson {
                 SxJsonValue::String(lit) => SxValue::CssLiteral(lit.clone()),
                 SxJsonValue::Nested(nested) => SxValue::Nested(nested.to_sx()),
                 SxJsonValue::Boolean(b) => SxValue::CssLiteral(b.to_string()),
-                SxJsonValue::Int(i) => SxValue::Integer(*i),
-                SxJsonValue::Float(f) => SxValue::Float(*f),
+                SxJsonValue::Int(i) => SxValue::Integer((*i).into()),
+                SxJsonValue::Float(f) => SxValue::Float(BigDecimal::from_f32(*f).expect("must be representable")),
             };
             sx.insert(key.to_owned(), sx_value);
         }

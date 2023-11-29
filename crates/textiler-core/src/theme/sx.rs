@@ -1,30 +1,32 @@
 //! Contains the definition of the `Sx` type and the `sx!` macro
 //!
 //!
+use std::fmt::{Debug, Display};
+use std::ops::Index;
+use std::str::FromStr;
+
+use cfg_if::cfg_if;
 use cssparser::ToCss;
 use gloo::history::query::FromQuery;
 use heck::{ToKebabCase, ToLowerCamelCase, ToTrainCase};
-use indexmap::map::Entry;
 use indexmap::IndexMap;
+use indexmap::map::Entry;
 use serde::Deserialize;
-use std::fmt::Debug;
-use std::ops::Index;
-use std::str::FromStr;
-use stylist::ast::{Sheet, ToStyleStr};
-use stylist::Style;
-use yew::Classes;
+use yew::html::ImplicitClone;
 
+pub use sx_value::*;
+use crate::style_manager::Css;
+
+use crate::system_props::{CssPropertyTranslator, SYSTEM_PROPERTIES};
 pub use crate::theme::sx;
 use crate::theme::sx::sx_to_css::sx_to_css;
-use crate::theme::theme_mode::ThemeMode;
 use crate::theme::Theme;
+use crate::theme::theme_mode::ThemeMode;
+use crate::utils::to_property;
 
 mod sx_to_css;
 mod sx_value;
 mod sx_value_parsing;
-use crate::system_props::{CssPropertyTranslator, SYSTEM_PROPERTIES};
-use crate::utils::to_property;
-pub use sx_value::*;
 
 /// Contains CSS definition with some customization
 #[derive(Debug, Default, PartialEq, Clone)]
@@ -32,7 +34,9 @@ pub struct Sx {
     props: IndexMap<String, SxValue>,
 }
 
-pub type Css = Sheet;
+impl ImplicitClone for Sx {}
+
+// assert_impl_all!(Css: Display, ToString, Eq);
 
 impl Sx {
     /// Sets a css property
@@ -69,11 +73,12 @@ impl Sx {
 
     pub fn to_css(self, mode: &ThemeMode, theme: &Theme) -> Css {
         let css = sx_to_css(self, mode, theme, None).expect("invalid sx");
-        Sheet::from_str(&css).unwrap()
+
+        css
     }
 
     /// Gets the properties set in this sx
-    pub fn properties(&self) -> impl IntoIterator<Item = &str> {
+    pub fn properties(&self) -> impl IntoIterator<Item=&str> {
         self.props.keys().map(|s| s.as_ref())
     }
 }
@@ -83,12 +88,6 @@ impl Index<&str> for Sx {
 
     fn index(&self, index: &str) -> &Self::Output {
         &self.props[index]
-    }
-}
-
-impl From<SxRef> for Classes {
-    fn from(value: SxRef) -> Self {
-        Classes::from(value.style)
     }
 }
 
@@ -181,7 +180,7 @@ macro_rules! sx_internal {
 
     // main implementation
     ({}) => {
-        crate::theme::sx::Sx::default()
+        $crate::Sx::default()
     };
 
     ({ $($tt:tt)+ }) => {
@@ -206,18 +205,6 @@ macro_rules! sx_internal {
 
 }
 
-/// A style ref can be used as a css class
-#[derive(Debug, Clone)]
-pub struct SxRef {
-    style: Style,
-}
-
-impl SxRef {
-    pub(crate) fn new(style: Style) -> Self {
-        Self { style }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -232,7 +219,7 @@ mod tests {
             sx["p"],
             SxValue::ThemeToken {
                 palette: "background".to_string(),
-                selector: "body".to_string()
+                selector: "body".to_string(),
             }
         )
     }

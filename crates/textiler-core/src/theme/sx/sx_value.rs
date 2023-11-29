@@ -1,6 +1,7 @@
 use std::fmt::{Debug, Formatter};
 use std::str::FromStr;
 use std::sync::{Arc, Mutex};
+use bigdecimal::{BigDecimal, FromPrimitive, ToPrimitive};
 
 use crate::theme::sx::sx_value_parsing::{parse_sx_value, ParseSxValueError};
 use crate::theme::{Color, Theme, PALETTE_SELECTOR_REGEX};
@@ -9,15 +10,15 @@ use crate::Sx;
 /// An sx value
 #[derive(Debug, PartialEq, Clone)]
 pub enum SxValue {
-    Integer(i32),
-    Float(f32),
-    Percent(f32),
+    Integer(BigDecimal),
+    Float(BigDecimal),
+    Percent(BigDecimal),
     FloatDimension {
-        value: f32,
+        value: BigDecimal,
         unit: String,
     },
     Dimension {
-        value: i32,
+        value: BigDecimal,
         unit: String,
     },
     CssLiteral(String),
@@ -54,7 +55,7 @@ impl SxValue {
                 format!("{f}")
             }
             SxValue::Percent(p) => {
-                format!("{}%", p * 100.0)
+                format!("{}%", (p * BigDecimal::from(100_u8)))
             }
             SxValue::FloatDimension { value, unit } => {
                 format!("{value}{unit}")
@@ -76,13 +77,13 @@ impl SxValue {
 
 impl From<i32> for SxValue {
     fn from(value: i32) -> Self {
-        Self::Integer(value)
+        Self::Integer(value.into())
     }
 }
 
 impl From<f32> for SxValue {
     fn from(value: f32) -> Self {
-        Self::Float(value)
+        Self::Float(BigDecimal::from_f32(value).expect("not representable by big decimal"))
     }
 }
 

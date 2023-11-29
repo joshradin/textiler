@@ -11,3 +11,14 @@ license.workspace = true
 [dependencies]
 textiler-core = { path = "../textiler-core", version = "0.1.0"}
 yew = "0.21.0"
+log = "0.4.20"
+strum = "0.25.0"
+derive_more = "0.99.17"
+web-sys = "0.3.65"
+
+
+[dev-dependencies]
+yew = { version = "0.21.0", features=["ssr", "csr"] }
+tokio = { version = "1.34.0", features=["rt", "macros"] }
+wasm-bindgen-test = "0.3.38"
+wasm-logger = "0.2.0"

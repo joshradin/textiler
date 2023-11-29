@@ -18,6 +18,7 @@ pub mod utils;
 pub mod style;
 pub mod context;
 pub mod hooks;
+pub mod style_manager;
 
 /// The prelude
 pub mod prelude {

@@ -25,6 +25,8 @@ pub mod sx;
 pub mod theme_mode;
 pub mod typography;
 
+pub use theme_mode::ThemeMode;
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Theme {
     pub prefix: String,
@@ -45,7 +47,7 @@ impl Default for Theme {
 
 impl Theme {
     pub fn new() -> Self {
-        Self::with_prefix("happy")
+        Self::with_prefix("textiler")
     }
 
     pub fn with_prefix(prefix: impl AsRef<str>) -> Self {

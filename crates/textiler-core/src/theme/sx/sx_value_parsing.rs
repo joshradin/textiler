@@ -1,5 +1,6 @@
 use std::num::ParseIntError;
 use std::ops::Deref;
+use bigdecimal::{BigDecimal, FromPrimitive};
 
 use cssparser::{BasicParseError, BasicParseErrorKind, Parser, ParserInput, ToCss, Token};
 
@@ -58,9 +59,9 @@ fn parse(parser: &mut Parser) -> Result<SxValue> {
             int_value,
         } => {
             if let Some(int_value) = int_value {
-                SxValue::Integer(*int_value)
+                SxValue::Integer(BigDecimal::from(*int_value))
             } else {
-                SxValue::Float(*value)
+                SxValue::from(*value)
             }
         }
         Token::Percentage {
@@ -69,9 +70,9 @@ fn parse(parser: &mut Parser) -> Result<SxValue> {
             int_value,
         } => {
             if let &Some(int_value) = int_value {
-                SxValue::Percent(int_value as f32 / 100.0)
+                SxValue::Percent(BigDecimal::from(int_value) / BigDecimal::from(100_u8))
             } else {
-                SxValue::Percent(*unit_value)
+                SxValue::Percent(BigDecimal::from_f32(*unit_value).expect("not representable by big decimal"))
             }
         }
         Token::Dimension {
@@ -81,11 +82,11 @@ fn parse(parser: &mut Parser) -> Result<SxValue> {
             unit,
         } => match int_value {
             None => SxValue::FloatDimension {
-                value: *value,
+                value: BigDecimal::from_f32(*value).expect("not representable by big decimal"),
                 unit: unit.to_string(),
             },
-            Some(value) => SxValue::Dimension {
-                value: *value,
+            &Some(value) => SxValue::Dimension {
+                value: BigDecimal::from(value),
                 unit: unit.to_string(),
             },
         },
@@ -121,6 +122,7 @@ impl<'a> From<BasicParseError<'a>> for ParseSxValueError {
 
 #[cfg(test)]
 mod tests {
+    use bigdecimal::ToPrimitive;
     use crate::theme::sx::sx_value::SxValue;
     use crate::theme::sx::sx_value_parsing::parse_sx_value;
     use crate::theme::Color;
@@ -150,12 +152,12 @@ mod tests {
 
         let red = "red";
 
-        let value = parse_sx_value(hex).expect("could not parse");
+        let value = parse_sx_value(red).expect("could not parse");
         let SxValue::Color(color) = &value else {
             panic!("wrong sx value kind: {value:#?}");
         };
         let SxValue::Color(Color::CSSLiteral(color)) = value else {
-            panic!("should be a color")
+            panic!("should be a color ({:?})", value)
         };
         assert_eq!(color, "red");
     }
@@ -167,21 +169,21 @@ mod tests {
             panic!("should parse percent");
         };
 
-        assert_eq!(percent, 0.15);
+        assert_eq!(percent.to_f32().unwrap(), 0.15_f32);
 
         let percent = "15.3%";
         let SxValue::Percent(percent) = parse_sx_value(percent).expect("parse error") else {
             panic!("should parse percent");
         };
 
-        assert_eq!(percent, 0.153);
+        assert_eq!(percent.to_f32().unwrap(), 0.153);
 
         let percent = "-15.3%";
         let SxValue::Percent(percent) = parse_sx_value(percent).expect("parse error") else {
             panic!("should parse percent");
         };
 
-        assert_eq!(percent, -0.153);
+        assert_eq!(percent.to_f32().unwrap(), -0.153);
     }
 
     #[test]
@@ -192,7 +194,7 @@ mod tests {
             panic!("should parse dimension");
         };
 
-        assert_eq!(value, 5);
+        assert_eq!(value.to_u32().unwrap(), 5);
         assert_eq!(unit, "px");
     }
 }

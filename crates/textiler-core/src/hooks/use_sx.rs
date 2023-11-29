@@ -1,20 +1,25 @@
-use stylist::Style;
+
 use yew::{hook, use_memo};
+use crate::context::StyleManagerContext;
 
 use crate::hooks::{use_mode, use_style_manager, use_theme};
-use crate::theme::sx::{Sx, SxRef};
+use crate::theme::ThemeMode;
+use crate::style_manager::{SxRef, StyleManager};
+use crate::theme::sx::Sx;
 use crate::theme::Theme;
 
+
+/// Use sx attaches sx to the css body
 #[hook]
-pub fn use_sx<Source>(source: Source) -> SxRef
+pub fn use_sx<F>(source: F) -> SxRef
 where
-    Source: Into<Sx>,
+    F : Fn(&Theme, &ThemeMode) -> Sx
 {
     let ctx = use_theme();
     let (mode, ..) = use_mode();
-    let manager = use_style_manager();
+    let manager: StyleManagerContext = use_style_manager();
 
-    let sx = source.into();
+    let sx = source(&ctx, &mode);
     let css = use_memo((sx, ctx, mode), |(sx, ctx, mode)| {
         let theme: &Theme = &*ctx;
         debug!(
@@ -24,6 +29,5 @@ where
         sx.clone().to_css(mode, theme)
     });
 
-    let style = Style::new_with_manager((*css).clone(), &*manager).expect("could not create style");
-    SxRef::new(style)
+    manager.mount(&*css).expect("could not mount css")
 }

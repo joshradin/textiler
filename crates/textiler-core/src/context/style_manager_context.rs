@@ -3,22 +3,22 @@ use std::rc::Rc;
 
 use cfg_if::cfg_if;
 use gloo::utils::document;
-use stylist::ast::ToStyleStr;
-use stylist::manager::StyleManager;
+use stylist::style;
 use wasm_bindgen::JsCast;
 use web_sys::{HtmlStyleElement, Node};
 
 use crate::{Error, Sx};
+use crate::style_manager::{Css, StyleManager, StyleManagerBackend, SxRef};
 use crate::theme::Theme;
 use crate::theme::theme_mode::ThemeMode;
 
-#[derive(Default, Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub struct StyleManagerContext {
-    manager: Rc<StyleManager>,
+    manager: Rc<StyleManagerBackend>,
 }
 
 impl StyleManagerContext {
-    pub fn new(manager: Rc<StyleManager>) -> Self {
+    pub fn new(manager: Rc<StyleManagerBackend>) -> Self {
         Self { manager }
     }
 
@@ -30,14 +30,14 @@ impl StyleManagerContext {
         to_mount: Sx,
     ) -> Result<(), Error> {
         let document = document();
-        let container = self.container().ok_or(Error::Web(None))?;
+        let container = document.head().expect("no head");
 
         (|| {
             let css = to_mount.to_css(&mode, theme);
             let style_element = document.create_element("style")?;
             let theme_name = format!("theme-{}-main", theme.prefix);
             style_element.set_attribute("data-style", &theme_name)?;
-            let base_css = css.to_style_str(None);
+            let base_css = css.to_string();
 
             if option_env!("MINIFY_CSS").is_some() {
                 match minifier::css::minify(&base_css) {
@@ -76,7 +76,7 @@ impl StyleManagerContext {
         })()
         .map_err(|e| Error::Web(Some(e)))
     }
-    pub fn mount(&self, theme: &Theme, mode: &ThemeMode, to_mount: Sx) -> Result<(), crate::Error> {
+    pub fn mount_main(&self, theme: &Theme, mode: &ThemeMode, to_mount: Sx) -> Result<(), crate::Error> {
         cfg_if! {
             if #[cfg(target_arch="wasm32")] {
                 self.mount_wasm(theme, mode, to_mount)
@@ -88,9 +88,27 @@ impl StyleManagerContext {
 }
 
 impl Deref for StyleManagerContext {
-    type Target = StyleManager;
+    type Target = StyleManagerBackend;
 
     fn deref(&self) -> &Self::Target {
         &*self.manager
+    }
+}
+
+impl StyleManager for StyleManagerContext {
+    type Builder = <StyleManagerBackend as StyleManager>::Builder;
+    type Error = <StyleManagerBackend as StyleManager>::Error;
+
+    fn builder() -> Self::Builder {
+        panic!("can not build")
+    }
+
+    fn mount(&self, css: &Css) -> Result<SxRef, Self::Error> {
+        if css.trim().is_empty() {
+            Ok(SxRef::new(style!().unwrap()))
+        } else {
+            self.manager.mount(css)
+        }
+
     }
 }

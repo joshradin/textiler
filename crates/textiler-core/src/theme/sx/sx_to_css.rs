@@ -18,7 +18,7 @@ pub fn sx_to_css<'a>(
     mode: &ThemeMode,
     theme: &Theme,
     base_query: impl Into<Option<&'a str>>,
-) -> Result<String, crate::Error> {
+) -> Result<crate::style_manager::Css, crate::Error> {
     let mut stack = vec![];
     let option = base_query.into();
     stack.extend(option.clone().map(|c| c.into()));

@@ -3,8 +3,8 @@
 use std::ops::Deref;
 
 use strum::IntoEnumIterator;
-use web_sys::HtmlElement;
-use yew::{classes, Classes, function_component, html, Html, Properties, use_effect_with};
+use web_sys::{HtmlElement, MouseEvent};
+use yew::{AttrValue, Callback, classes, Classes, function_component, html, Html, NodeRef, Properties, ServerRenderer, use_effect, use_effect_with};
 use yew::html::{Children, ImplicitClone, IntoPropValue};
 
 use crate::hooks::{use_sx, use_theme};
@@ -13,14 +13,19 @@ use crate::theme::sx::Sx;
 
 #[derive(Default, Debug, Clone, PartialEq, Properties)]
 pub struct StylingBoxProps {
+    /// Element level css
     #[prop_or_default]
     pub sx: Sx,
+    /// onclick
+    #[prop_or_default]
+    pub onclick: Option<Callback<MouseEvent>>,
+    /// Variant
     #[prop_or_default]
     pub variant: VariantProp,
     #[prop_or_default]
     pub color: ColorProp,
-    #[prop_or_else(|| "div".to_string())]
-    pub component: String,
+    #[prop_or_else(|| "div".to_string().into())]
+    pub component: AttrValue,
     #[prop_or_else(|| classes!("box"))]
     pub class: Classes,
     #[prop_or_default]
@@ -31,11 +36,12 @@ pub struct StylingBoxProps {
 
 #[function_component]
 pub fn StylingBox(props: &StylingBoxProps) -> Html {
-    let sx = use_sx(props.sx.clone());
+    let sx = use_sx(|_, _| props.sx.clone());
     let theme = use_theme();
     let mut classes = classes!(sx);
     classes.extend(props.class.clone());
     classes.extend(classes!(format!("{}-system", theme.prefix)));
+
 
     let html_ref = yew::use_node_ref();
     {
@@ -69,7 +75,7 @@ pub fn StylingBox(props: &StylingBoxProps) -> Html {
     }
 
     html! {
-        <@{props.component.clone()} class={classes} ref={html_ref}>
+        <@{props.component.to_string()} onclick={props.onclick.clone()} class={classes} ref={html_ref}>
             { for props.children.clone() }
         </@>
     }

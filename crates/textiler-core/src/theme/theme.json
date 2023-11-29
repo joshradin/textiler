@@ -13,49 +13,65 @@
       }
     },
     "body-xs": {
-      "fontWeight": 400,
+      "fontWeight": 100,
       "fontSize": "8px"
     },
     "body-sm": {
-      "fontWeight": 400,
+      "fontWeight": 100,
       "fontSize": "12px"
     },
     "body-md": {
-      "fontWeight": 400,
+      "fontWeight": 100,
       "fontSize": "16px"
     },
     "body-lg": {
-      "fontWeight": 400,
+      "fontWeight": 100,
       "fontSize": "20px"
     },
     "body-xl": {
-      "fontWeight": 400,
+      "fontWeight": 100,
       "fontSize": "24px"
     },
     "title-xs": {
-      "fontWeight": 700,
+      "fontWeight": 500,
       "fontSize": "16px",
       "lineHeight": "24px"
     },
     "title-sm": {
-      "fontWeight": 700,
+      "fontWeight": 500,
       "fontSize": "20px",
       "lineHeight": "28px"
     },
     "title-md": {
-      "fontWeight": 700,
+      "fontWeight": 500,
       "fontSize": "24px",
       "lineHeight": "32px"
     },
     "title-lg": {
-      "fontWeight": 700,
+      "fontWeight": 500,
       "fontSize": "28px",
       "lineHeight": "36px"
     },
     "title-xl": {
-      "fontWeight": 700,
+      "fontWeight": 500,
       "fontSize": "32px",
       "lineHeight": "40px"
+    },
+    "h1": {
+      "fontWeight": 900,
+      "fontSize": "3em"
+    },
+    "h2": {
+      "fontWeight": 900,
+      "fontSize": "2.5em"
+    },
+    "h3": {
+      "fontWeight": 900,
+      "fontSize": "2em"
+    },
+    "h4": {
+      "fontWeight": 900,
+      "fontSize": "1.5em"
     }
   },
   "palettes": {

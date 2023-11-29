@@ -1,8 +1,6 @@
 //! Theme context
 
 use std::ops::{Deref, DerefMut};
-use stylist::ast::ToStyleStr;
-use stylist::manager::StyleManager;
 use wasm_bindgen::JsCast;
 use yew::{function_component, html, use_effect_with, use_state_eq, Children, Html, Properties};
 
@@ -10,6 +8,7 @@ use crate::theme::baseline::baseline;
 use crate::theme::theme_mode::ThemeMode;
 use crate::theme::{Theme};
 use crate::{Error, hooks, Sx};
+use crate::style_manager::{StyleManager, StyleManagerBackend, StyleManagerBuilder};
 
 pub use self::{mode_context::ThemeModeContext, style_manager_context::StyleManagerContext, theme_context::ThemeContext};
 
@@ -29,8 +28,8 @@ pub struct ThemeProviderProps {
 pub fn ThemeProvider(props: &ThemeProviderProps) -> Html {
     let theme_state = ThemeContext::new(yew::use_state_eq(|| props.theme.clone()));
     let manager = StyleManagerContext::new(yew::use_memo(theme_state.clone(), |_| {
-        StyleManager::builder()
-            .prefix(theme_state.prefix.clone().into())
+        StyleManagerBackend::builder()
+            .prefix(theme_state.prefix.clone())
             .build()
             .expect("could not create style manager")
     }));
@@ -55,7 +54,7 @@ pub fn CssBaseline() -> Html {
 
     use_effect_with((theme, mode), move |(theme, mode)| {
         style_manager
-            .mount(theme, &mode, baseline(theme, &mode))
+            .mount_main(theme, &mode, baseline(theme, &mode))
             .expect("could not mount sx");
     });
 
